@@ -57,7 +57,7 @@ def generate_movies(n_samples=1200, n_frames=15):
         # Add 3 to 7 moving squares
         n = np.random.randint(3, 8)
 
-        for j in range(n):
+        for _ in range(n):
             # Initial position
             xstart = np.random.randint(20, 60)
             ystart = np.random.randint(20, 60)
@@ -110,7 +110,7 @@ seq.fit(noisy_movies[:1000], shifted_movies[:1000], batch_size=10,
 which = 1004
 track = noisy_movies[which][:7, ::, ::, ::]
 
-for j in range(16):
+for _ in range(16):
     new_pos = seq.predict(track[np.newaxis, ::, ::, ::, ::])
     new = new_pos[::, -1, ::, ::, ::]
     track = np.concatenate((track, new), axis=0)

@@ -698,7 +698,7 @@ def test_multiprocessing_fit_error():
     @threadsafe_generator
     def custom_generator(use_weights=False):
         """Raises an exception after a few good batches"""
-        for i in range(good_batches):
+        for _ in range(good_batches):
             batch_index = np.random.randint(0, n_samples - batch_size)
             start = batch_index
             end = start + batch_size
@@ -780,7 +780,7 @@ def test_multithreading_fit_error():
     @threadsafe_generator
     def custom_generator():
         """Raises an exception after a few good batches"""
-        for i in range(good_batches):
+        for _ in range(good_batches):
             batch_index = np.random.randint(0, n_samples - batch_size)
             start = batch_index
             end = start + batch_size
@@ -840,7 +840,7 @@ def test_multiprocessing_evaluate_error():
     @threadsafe_generator
     def custom_generator():
         """Raises an exception after a few good batches"""
-        for i in range(good_batches):
+        for _ in range(good_batches):
             batch_index = np.random.randint(0, n_samples - batch_size)
             start = batch_index
             end = start + batch_size
@@ -916,7 +916,7 @@ def test_multithreading_evaluate_error():
     @threadsafe_generator
     def custom_generator():
         """Raises an exception after a few good batches"""
-        for i in range(good_batches):
+        for _ in range(good_batches):
             batch_index = np.random.randint(0, n_samples - batch_size)
             start = batch_index
             end = start + batch_size
@@ -971,7 +971,7 @@ def test_multiprocessing_predict_error():
         batch_size = 10
         n_samples = 50
 
-        for i in range(good_batches):
+        for _ in range(good_batches):
             batch_index = np.random.randint(0, n_samples - batch_size)
             start = batch_index
             end = start + batch_size
@@ -1046,7 +1046,7 @@ def test_multithreading_predict_error():
         batch_size = 10
         n_samples = 50
 
-        for i in range(good_batches):
+        for _ in range(good_batches):
             batch_index = np.random.randint(0, n_samples - batch_size)
             start = batch_index
             end = start + batch_size

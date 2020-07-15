@@ -229,8 +229,7 @@ for img_layer, mask_layer in zip(image_model.layers, mask_model.layers):
 def gram_matrix(x):
     assert K.ndim(x) == 3
     features = K.batch_flatten(x)
-    gram = K.dot(features, K.transpose(features))
-    return gram
+    return K.dot(features, K.transpose(features))
 
 
 def region_style_loss(style_image, target_image, style_mask, target_mask):

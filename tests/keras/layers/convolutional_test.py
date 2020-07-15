@@ -39,13 +39,7 @@ def test_causal_dilated_conv(layer_kwargs, input_length, expected_output):
                kwargs=layer_kwargs, expected_output=expected_output)
 
 
-@pytest.mark.parametrize(
-    'padding,strides',
-    [(padding, strides)
-     for padding in _convolution_paddings
-     for strides in [1, 2]
-     if not (padding == 'same' and strides != 1)]
-)
+@pytest.mark.parametrize('padding,strides', [(padding, strides) for padding in _convolution_paddings for strides in [1, 2] if padding != 'same' or strides == 1])
 def test_conv_1d(padding, strides):
     batch_size = 2
     steps = 8
@@ -103,13 +97,7 @@ def DISABLED_test_conv_1d_channels_first():
                input_shape=(batch_size, input_dim, steps))
 
 
-@pytest.mark.parametrize(
-    'strides,padding',
-    [(strides, padding)
-     for padding in _convolution_paddings
-     for strides in [(1, 1), (2, 2)]
-     if not (padding == 'same' and strides != (1, 1))]
-)
+@pytest.mark.parametrize('strides,padding', [(strides, padding) for padding in _convolution_paddings for strides in [(1, 1), (2, 2)] if padding != 'same' or strides == (1, 1)])
 def test_convolution_2d(strides, padding):
     num_samples = 2
     filters = 2
@@ -145,25 +133,17 @@ def test_convolution_2d_dilation():
 
 
 def test_convolution_2d_invalid():
-    filters = 2
-    padding = _convolution_paddings[-1]
-    kernel_size = (3, 2)
-
     with pytest.raises(ValueError):
+        filters = 2
+        padding = _convolution_paddings[-1]
+        kernel_size = (3, 2)
+
         model = Sequential([convolutional.Conv2D(
             filters=filters, kernel_size=kernel_size, padding=padding,
             batch_input_shape=(None, None, 5, None))])
 
 
-@pytest.mark.parametrize(
-    'padding,out_padding,strides',
-    [(padding, out_padding, strides)
-     for padding in _convolution_paddings
-     for out_padding in [None, (0, 0), (1, 1)]
-     for strides in [(1, 1), (2, 2)]
-     if (not (padding == 'same' and strides != (1, 1))
-         and not(strides == (1, 1) and out_padding == (1, 1)))]
-)
+@pytest.mark.parametrize('padding,out_padding,strides', [(padding, out_padding, strides) for padding in _convolution_paddings for out_padding in [None, (0, 0), (1, 1)] for strides in [(1, 1), (2, 2)] if (padding != 'same' or strides == (1, 1)) and (strides != (1, 1) or out_padding != (1, 1))])
 def test_conv2d_transpose(padding, out_padding, strides):
     num_samples = 2
     filters = 2
@@ -271,17 +251,7 @@ def test_conv2d_transpose_invalid():
             batch_input_shape=(None, num_row, num_col, stack_size))])
 
 
-@pytest.mark.parametrize(
-    'padding,strides,multiplier,dilation_rate',
-    [(padding, strides, multiplier, dilation_rate)
-     for padding in _convolution_paddings
-     for strides in [1, 2]
-     for multiplier in [1, 2]
-     for dilation_rate in [1, 2]
-     if (not (padding == 'same' and strides != 1)
-         and not (dilation_rate != 1 and strides != 1)
-         and not (dilation_rate != 1 and K.backend() == 'cntk'))]
-)
+@pytest.mark.parametrize('padding,strides,multiplier,dilation_rate', [(padding, strides, multiplier, dilation_rate) for padding in _convolution_paddings for strides in [1, 2] for multiplier in [1, 2] for dilation_rate in [1, 2] if not (padding == 'same' and strides != 1) and (dilation_rate == 1 or strides == 1) and not (dilation_rate != 1 and K.backend() == 'cntk')])
 def test_separable_conv_1d(padding, strides, multiplier, dilation_rate):
     num_samples = 2
     filters = 6
@@ -325,26 +295,15 @@ def test_separable_conv_1d_additional_args():
 
 
 def test_separable_conv_1d_invalid():
-    filters = 6
-    padding = 'valid'
     with pytest.raises(ValueError):
+        filters = 6
+        padding = 'valid'
         model = Sequential([convolutional.SeparableConv1D(
             filters=filters, kernel_size=3, padding=padding,
             batch_input_shape=(None, 5, None))])
 
 
-@pytest.mark.parametrize(
-    'padding,strides,multiplier,dilation_rate',
-    [(padding, strides, multiplier, dilation_rate)
-     for padding in _convolution_paddings
-     for strides in [(1, 1), (2, 2)]
-     for multiplier in [1, 2]
-     for dilation_rate in [(1, 1), (2, 2), (2, 1), (1, 2)]
-     if (not (padding == 'same' and strides != (1, 1))
-         and not (dilation_rate != (1, 1) and strides != (1, 1))
-         and not (dilation_rate != (1, 1) and multiplier == dilation_rate[0])
-         and not (dilation_rate != (1, 1) and K.backend() == 'cntk'))]
-)
+@pytest.mark.parametrize('padding,strides,multiplier,dilation_rate', [(padding, strides, multiplier, dilation_rate) for padding in _convolution_paddings for strides in [(1, 1), (2, 2)] for multiplier in [1, 2] for dilation_rate in [(1, 1), (2, 2), (2, 1), (1, 2)] if (padding != 'same' or strides == (1, 1)) and not (dilation_rate != (1, 1) and strides != (1, 1)) and (dilation_rate == (1, 1) or multiplier != dilation_rate[0]) and (dilation_rate == (1, 1) or K.backend() != 'cntk')])
 def test_separable_conv_2d(padding, strides, multiplier, dilation_rate):
     num_samples = 2
     filters = 6
@@ -391,26 +350,15 @@ def test_separable_conv_2d_additional_args():
 
 
 def test_separable_conv_2d_invalid():
-    filters = 6
-    padding = 'valid'
     with pytest.raises(ValueError):
+        filters = 6
+        padding = 'valid'
         model = Sequential([convolutional.SeparableConv2D(
             filters=filters, kernel_size=3, padding=padding,
             batch_input_shape=(None, None, 5, None))])
 
 
-@pytest.mark.parametrize(
-    'padding,strides,multiplier,dilation_rate',
-    [(padding, strides, multiplier, dilation_rate)
-     for padding in _convolution_paddings
-     for strides in [(1, 1), (2, 2)]
-     for multiplier in [1, 2]
-     for dilation_rate in [(1, 1), (2, 2), (2, 1), (1, 2)]
-     if (not (padding == 'same' and strides != (1, 1))
-         and not (dilation_rate != (1, 1) and strides != (1, 1))
-         and not (dilation_rate != (1, 1) and multiplier == dilation_rate[0])
-         and not (dilation_rate != (1, 1) and K.backend() == 'cntk'))]
-)
+@pytest.mark.parametrize('padding,strides,multiplier,dilation_rate', [(padding, strides, multiplier, dilation_rate) for padding in _convolution_paddings for strides in [(1, 1), (2, 2)] for multiplier in [1, 2] for dilation_rate in [(1, 1), (2, 2), (2, 1), (1, 2)] if (padding != 'same' or strides == (1, 1)) and not (dilation_rate != (1, 1) and strides != (1, 1)) and (dilation_rate == (1, 1) or multiplier != dilation_rate[0]) and (dilation_rate == (1, 1) or K.backend() != 'cntk')])
 def test_depthwise_conv_2d(padding, strides, multiplier, dilation_rate):
     num_samples = 2
     stack_size = 3
@@ -454,21 +402,15 @@ def test_depthwise_conv_2d_additional_args():
 
 
 def test_depthwise_conv_2d_invalid():
-    padding = 'valid'
     with pytest.raises(ValueError):
+        padding = 'valid'
         Sequential([convolutional.DepthwiseConv2D(
             kernel_size=3,
             padding=padding,
             batch_input_shape=(None, None, 5, None))])
 
 
-@pytest.mark.parametrize(
-    'padding,strides',
-    [(padding, strides)
-     for padding in _convolution_paddings
-     for strides in [(1, 1, 1), (2, 2, 2)]
-     if not (padding == 'same' and strides != (1, 1, 1))]
-)
+@pytest.mark.parametrize('padding,strides', [(padding, strides) for padding in _convolution_paddings for strides in [(1, 1, 1), (2, 2, 2)] if padding != 'same' or strides == (1, 1, 1)])
 def test_convolution_3d(padding, strides):
     num_samples = 2
     filters = 2

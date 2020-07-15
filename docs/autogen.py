@@ -37,10 +37,7 @@ def get_function_signature(function, method=True):
     else:
         signature = inspect.getfullargspec(wrapped)
     defaults = signature.defaults
-    if method:
-        args = signature.args[1:]
-    else:
-        args = signature.args
+    args = signature.args[1:] if method else signature.args
     if defaults:
         kwargs = zip(args[-len(defaults):], defaults)
         args = args[:-len(defaults)]
@@ -54,10 +51,7 @@ def get_function_signature(function, method=True):
         if isinstance(v, str):
             v = '\'' + v + '\''
         st += str(a) + '=' + str(v) + ', '
-    if kwargs or args:
-        signature = st[:-2] + ')'
-    else:
-        signature = st + ')'
+    signature = st[:-2] + ')' if kwargs or args else st + ')'
     return post_process_signature(signature)
 
 
@@ -315,9 +309,11 @@ def read_page_data(page_data, type):
             if (inspect.isclass(module_member) and type == 'classes' or
                inspect.isfunction(module_member) and type == 'functions'):
                 instance = module_member
-                if module.__name__ in instance.__module__:
-                    if instance not in module_data:
-                        module_data.append(instance)
+                if (
+                    module.__name__ in instance.__module__
+                    and instance not in module_data
+                ):
+                    module_data.append(instance)
         module_data.sort(key=lambda x: id(x))
         data += module_data
     return data

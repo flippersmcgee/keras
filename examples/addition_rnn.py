@@ -47,8 +47,8 @@ class CharacterTable(object):
             chars: Characters that can appear in the input.
         """
         self.chars = sorted(set(chars))
-        self.char_indices = dict((c, i) for i, c in enumerate(self.chars))
-        self.indices_char = dict((i, c) for i, c in enumerate(self.chars))
+        self.char_indices = {c: i for i, c in enumerate(self.chars)}
+        self.indices_char = {i: c for i, c in enumerate(self.chars)}
 
     def encode(self, C, num_rows):
         """One-hot encode given string C.

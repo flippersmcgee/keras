@@ -185,7 +185,7 @@ vocab = sorted(vocab)
 
 # Reserve 0 for masking via pad_sequences
 vocab_size = len(vocab) + 1
-word_idx = dict((c, i + 1) for i, c in enumerate(vocab))
+word_idx = {c: i + 1 for i, c in enumerate(vocab)}
 story_maxlen = max(map(len, (x for x, _, _ in train + test)))
 query_maxlen = max(map(len, (x for _, x, _ in train + test)))
 

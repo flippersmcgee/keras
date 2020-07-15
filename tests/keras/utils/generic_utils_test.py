@@ -59,7 +59,7 @@ def test_custom_objects_scope():
 ])
 def test_has_arg(fn, name, accept_all, expected):
     if isinstance(fn, str):
-        context = dict()
+        context = {}
         try:
             exec('def {}: pass'.format(fn), context)
         except SyntaxError:

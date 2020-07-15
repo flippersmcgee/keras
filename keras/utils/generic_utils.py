@@ -57,10 +57,7 @@ def object_list_uid(object_list):
 
 def is_all_none(iterable_or_element):
     iterable = to_list(iterable_or_element, allow_tuple=True)
-    for element in iterable:
-        if element is not None:
-            return False
-    return True
+    return all(element is None for element in iterable)
 
 
 def slice_arrays(arrays, start=None, stop=None):

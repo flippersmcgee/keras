@@ -136,7 +136,7 @@ epochs = 30
 # build encoder model
 inputs = Input(shape=input_shape, name='encoder_input')
 x = inputs
-for i in range(2):
+for _ in range(2):
     filters *= 2
     x = Conv2D(filters=filters,
                kernel_size=kernel_size,

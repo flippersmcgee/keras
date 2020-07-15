@@ -51,7 +51,7 @@ def data_generator(x, y, batch_size):
         y_batch = unpack_singleton(y_batch)
         yield x_batch, y_batch
         i += 1
-        i = i % max_batch_index
+        i %= max_batch_index
 
 
 # Changing the default arguments of get_test_data.
@@ -289,7 +289,7 @@ class TestCallbackCounts(object):
 
                 yield x_batch
                 i += 1
-                i = i % max_batch_index
+                i %= max_batch_index
 
         model = self._get_model()
         counter = Counter()
@@ -412,7 +412,7 @@ def test_stop_training_csv(tmpdir):
                        y_train[i * batch_size: (i + 1) * batch_size])
             i += 1
             tot += 1
-            i = i % max_batch_index
+            i %= max_batch_index
 
     history = model.fit_generator(data_generator(),
                                   len(X_train) // batch_size,

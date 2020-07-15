@@ -57,7 +57,7 @@ def create_network(n_dense=6,
     model.add(Activation(activation))
     model.add(dropout(dropout_rate))
 
-    for i in range(n_dense - 1):
+    for _ in range(n_dense - 1):
         model.add(Dense(dense_units, kernel_initializer=kernel_initializer))
         model.add(Activation(activation))
         model.add(dropout(dropout_rate))

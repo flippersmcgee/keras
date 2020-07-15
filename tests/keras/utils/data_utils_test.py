@@ -242,10 +242,7 @@ def test_generator_enqueuer_threads():
         DummySequence([3, 10, 10, 3])), use_multiprocessing=False)
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
-    acc = []
-    for i in range(100):
-        acc.append(int(next(gen_output)[0, 0, 0, 0]))
-
+    acc = [int(next(gen_output)[0, 0, 0, 0]) for _ in range(100)]
     """
      Not comparing the order since it is not guaranteed.
      It may get ordered, but not a lot, one thread can take
@@ -261,9 +258,7 @@ def DISABLED_test_generator_enqueuer_processes():
         DummySequence([3, 10, 10, 3])), use_multiprocessing=True)
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
-    acc = []
-    for i in range(100):
-        acc.append(int(next(gen_output)[0, 0, 0, 0]))
+    acc = [int(next(gen_output)[0, 0, 0, 0]) for _ in range(100)]
     assert acc != list(range(100)), ('Order was keep in GeneratorEnqueuer '
                                      'with processes')
     enqueuer.stop()
@@ -306,9 +301,7 @@ def test_ordered_enqueuer_threads():
                                use_multiprocessing=False)
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
-    acc = []
-    for i in range(100):
-        acc.append(next(gen_output)[0, 0, 0, 0])
+    acc = [next(gen_output)[0, 0, 0, 0] for _ in range(100)]
     assert acc == list(range(100)), ('Order was not keep in GeneratorEnqueuer '
                                      'with threads')
     enqueuer.stop()
@@ -320,9 +313,7 @@ def test_ordered_enqueuer_threads_not_ordered():
                                shuffle=True)
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
-    acc = []
-    for i in range(100):
-        acc.append(next(gen_output)[0, 0, 0, 0])
+    acc = [next(gen_output)[0, 0, 0, 0] for _ in range(100)]
     assert acc != list(range(100)), ('Order was not keep in GeneratorEnqueuer '
                                      'with threads')
     enqueuer.stop()
@@ -334,9 +325,7 @@ def test_ordered_enqueuer_processes():
                                use_multiprocessing=True)
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
-    acc = []
-    for i in range(100):
-        acc.append(next(gen_output)[0, 0, 0, 0])
+    acc = [next(gen_output)[0, 0, 0, 0] for _ in range(100)]
     assert acc == list(range(100)), ('Order was not keep in GeneratorEnqueuer '
                                      'with processes')
     enqueuer.stop()
@@ -382,11 +371,11 @@ def test_on_epoch_end_processes():
                                use_multiprocessing=True)
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
-    acc = []
-    for i in range(200):
-        acc.append(next(gen_output)[0, 0, 0, 0])
-    assert acc[100:] == list([k * 5 for k in range(100)]), (
-        'Order was not keep in GeneratorEnqueuer with processes')
+    acc = [next(gen_output)[0, 0, 0, 0] for _ in range(200)]
+    assert acc[100:] == [
+        k * 5 for k in range(100)
+    ], 'Order was not keep in GeneratorEnqueuer with processes'
+
     enqueuer.stop()
 
 
@@ -429,13 +418,15 @@ def DISABLED_test_on_epoch_end_threads():
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
     acc = []
-    for i in range(100):
+    for _ in range(100):
         acc.append(next(gen_output)[0, 0, 0, 0])
     acc = []
-    for i in range(100):
+    for _ in range(100):
         acc.append(next(gen_output)[0, 0, 0, 0])
-    assert acc == list([k * 5 for k in range(100)]), (
-        'Order was not keep in GeneratorEnqueuer with processes')
+    assert acc == [
+        k * 5 for k in range(100)
+    ], 'Order was not keep in GeneratorEnqueuer with processes'
+
     enqueuer.stop()
 
 
@@ -446,7 +437,7 @@ def DISABLED_test_on_epoch_end_threads_sequence_change_length():
     enqueuer.start(3, 10)
     gen_output = enqueuer.get()
     acc = []
-    for i in range(100):
+    for _ in range(100):
         acc.append(next(gen_output)[0, 0, 0, 0])
     assert acc == list(range(100)), ('Order was not keep in GeneratorEnqueuer '
                                      'with threads')
@@ -454,10 +445,12 @@ def DISABLED_test_on_epoch_end_threads_sequence_change_length():
     enqueuer.join_end_of_epoch()
     assert len(seq) == 50
     acc = []
-    for i in range(50):
+    for _ in range(50):
         acc.append(next(gen_output)[0, 0, 0, 0])
-    assert acc == list([k * 5 for k in range(50)]), (
-        'Order was not keep in GeneratorEnqueuer with processes')
+    assert acc == [
+        k * 5 for k in range(50)
+    ], 'Order was not keep in GeneratorEnqueuer with processes'
+
     enqueuer.stop()
 
 
@@ -472,13 +465,11 @@ def test_ordered_enqueuer_fail_processes():
 
 @threadsafe_generator
 def create_finite_generator_from_sequence_threads(ds):
-    for i in range(len(ds)):
-        yield ds[i]
+    yield from ds
 
 
 def create_finite_generator_from_sequence_pcs(ds):
-    for i in range(len(ds)):
-        yield ds[i]
+    yield from ds
 
 
 # TODO: resolve flakyness issue. Tracked with #11586

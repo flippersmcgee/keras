@@ -13,7 +13,7 @@ class TestImage(object):
         cls.img_w = cls.img_h = 20
         rgb_images = []
         gray_images = []
-        for n in range(8):
+        for _ in range(8):
             bias = np.random.rand(cls.img_w, cls.img_h, 1) * 64
             variance = np.random.rand(cls.img_w, cls.img_h, 1) * (255 - 64)
             imarray = np.random.rand(cls.img_w, cls.img_h, 3) * variance + bias
@@ -31,10 +31,7 @@ class TestImage(object):
 
     def test_image_data_generator(self, tmpdir):
         for test_images in self.all_test_images:
-            img_list = []
-            for im in test_images:
-                img_list.append(image.img_to_array(im)[None, ...])
-
+            img_list = [image.img_to_array(im)[None, ...] for im in test_images]
             images = np.vstack(img_list)
             generator = image.ImageDataGenerator(
                 featurewise_center=True,

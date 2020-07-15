@@ -95,7 +95,7 @@ def test_sequential_fit_generator():
                 yield (x_test[i * batch_size: (i + 1) * batch_size],
                        y_test[i * batch_size: (i + 1) * batch_size])
             i += 1
-            i = i % max_batch_index
+            i %= max_batch_index
 
     model = Sequential()
     model.add(Dense(num_hidden, input_shape=(input_dim,)))
@@ -263,7 +263,7 @@ def test_sequential_count_params():
     num_classes = 2
 
     n = input_dim * num_units + num_units
-    n += num_units * num_units + num_units
+    n += num_units**2 + num_units
     n += num_units * num_classes + num_classes
 
     model = Sequential()

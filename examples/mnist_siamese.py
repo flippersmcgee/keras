@@ -54,7 +54,7 @@ def create_pairs(x, digit_indices):
     '''
     pairs = []
     labels = []
-    n = min([len(digit_indices[d]) for d in range(num_classes)]) - 1
+    n = min(len(digit_indices[d]) for d in range(num_classes)) - 1
     for d in range(num_classes):
         for i in range(n):
             z1, z2 = digit_indices[d][i], digit_indices[d][i + 1]

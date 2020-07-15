@@ -38,7 +38,7 @@ def data_generator(x, y, batch_size):
         y_batch = unpack_singleton(y_batch)
         yield x_batch, y_batch
         i += 1
-        i = i % max_batch_index
+        i %= max_batch_index
 
 
 # Changing the default arguments of get_test_data.
