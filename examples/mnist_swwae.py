@@ -77,7 +77,7 @@ def convresblock(x, nfeats=8, ksize=3, nskipped=2, elu=True):
     """
     y0 = Conv2D(nfeats, ksize, padding='same')(x)
     y = y0
-    for i in range(nskipped):
+    for _ in range(nskipped):
         if elu:
             y = ELU()(y)
         else:

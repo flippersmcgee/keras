@@ -620,7 +620,7 @@ def _make_nested_model(input_shape, layer, level=1, model_type='func'):
     def make_nested_func_model(input_shape, layer, level=1):
         input = Input(input_shape)
         model = layer
-        for i in range(level):
+        for _ in range(level):
             model = Model(input, model(input))
         return model
 

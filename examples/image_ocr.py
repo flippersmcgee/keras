@@ -121,10 +121,7 @@ def paint_text(text, w, h, rotate=False, ud=False, multi_fonts=False):
         max_shift_x = w - box[2] - border_w_h[0]
         max_shift_y = h - box[3] - border_w_h[1]
         top_left_x = np.random.randint(0, int(max_shift_x))
-        if ud:
-            top_left_y = np.random.randint(0, int(max_shift_y))
-        else:
-            top_left_y = h // 2
+        top_left_y = np.random.randint(0, int(max_shift_y)) if ud else h // 2
         context.move_to(top_left_x - int(box[0]), top_left_y - int(box[1]))
         context.set_source_rgb(0, 0, 0)
         context.show_text(text)
@@ -144,7 +141,7 @@ def paint_text(text, w, h, rotate=False, ud=False, multi_fonts=False):
 
 def shuffle_mats_or_lists(matrix_list, stop_ind=None):
     ret = []
-    assert all([len(i) == len(matrix_list[0]) for i in matrix_list])
+    assert all(len(i) == len(matrix_list[0]) for i in matrix_list)
     len_val = len(matrix_list[0])
     if stop_ind is None:
         stop_ind = len_val
@@ -166,10 +163,7 @@ def shuffle_mats_or_lists(matrix_list, stop_ind=None):
 
 # Translation of characters to unique integer values
 def text_to_labels(text):
-    ret = []
-    for char in text:
-        ret.append(alphabet.find(char))
-    return ret
+    return [alphabet.find(char) for char in text]
 
 
 # Reverse translation of numerical classes back to characters
@@ -409,8 +403,8 @@ class VizCallback(keras.callbacks.Callback):
                 mean_ed += float(edit_dist)
                 mean_norm_ed += float(edit_dist) / len(word_batch['source_str'][j])
             num_left -= num_proc
-        mean_norm_ed = mean_norm_ed / num
-        mean_ed = mean_ed / num
+        mean_norm_ed /= num
+        mean_ed /= num
         print('\nOut of %d samples:  Mean edit distance:'
               '%.3f Mean normalized edit distance: %0.3f'
               % (num, mean_ed, mean_norm_ed))
@@ -422,10 +416,7 @@ class VizCallback(keras.callbacks.Callback):
         word_batch = next(self.text_img_gen)[0]
         res = decode_batch(self.test_func,
                            word_batch['the_input'][0:self.num_display_words])
-        if word_batch['the_input'][0].shape[0] < 256:
-            cols = 2
-        else:
-            cols = 1
+        cols = 2 if word_batch['the_input'][0].shape[0] < 256 else 1
         for i in range(self.num_display_words):
             pylab.subplot(self.num_display_words // cols, cols, i + 1)
             if K.image_data_format() == 'channels_first':

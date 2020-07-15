@@ -159,8 +159,7 @@ def test_hard_sigmoid():
     """
     def ref_hard_sigmoid(x):
         x = (x * 0.2) + 0.5
-        z = 0.0 if x <= 0 else (1.0 if x >= 1 else x)
-        return z
+        return 0.0 if x <= 0 else (1.0 if x >= 1 else x)
     hard_sigmoid = np.vectorize(ref_hard_sigmoid)
 
     x = K.placeholder(ndim=2)

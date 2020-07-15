@@ -155,6 +155,7 @@ and compare the result to the (resized) original image.
 """
 
 
+
 # Playing with these hyperparameters will also allow you to achieve new effects
 step = 0.01  # Gradient ascent step size
 num_octave = 3  # Number of scales at which to run gradient ascent
@@ -169,7 +170,7 @@ else:
     original_shape = img.shape[1:3]
 successive_shapes = [original_shape]
 for i in range(1, num_octave):
-    shape = tuple([int(dim / (octave_scale ** i)) for dim in original_shape])
+    shape = tuple(int(dim / (octave_scale ** i)) for dim in original_shape)
     successive_shapes.append(shape)
 successive_shapes = successive_shapes[::-1]
 original_img = np.copy(img)

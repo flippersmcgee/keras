@@ -176,7 +176,7 @@ def test_merge_concatenate():
     x_i = layers.Input(shape=(None, None))
     x_list = [x_i]
     x = x_i
-    for i in range(nb_layers):
+    for _ in range(nb_layers):
         x_list.append(x)
         x = layers.concatenate(x_list, axis=1)
     concat_model = models.Model(x_i, x)

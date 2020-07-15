@@ -41,10 +41,7 @@ def test_dropout():
                 input_shape = (2,) + shape + (3,)
             else:
                 input_shape = (2, 3) + shape
-            if len(shape) == 2:
-                layer = layers.SpatialDropout2D
-            else:
-                layer = layers.SpatialDropout3D
+            layer = layers.SpatialDropout2D if len(shape) == 2 else layers.SpatialDropout3D
             layer_test(layer,
                        kwargs={'rate': 0.5,
                                'data_format': data_format},

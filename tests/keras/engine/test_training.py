@@ -157,11 +157,7 @@ def get_model(num_outputs=1):
     dp = Dropout(0.5, name='dropout')
     b_2 = dp(b)
 
-    if num_outputs == 1:
-        model = Model([a, b], a_2)
-    else:
-        model = Model([a, b], [a_2, b_2])
-    return model
+    return Model([a, b], a_2) if num_outputs == 1 else Model([a, b], [a_2, b_2])
 
 
 class TrackerCallback(Callback):
@@ -1497,7 +1493,7 @@ def DISABLED_test_trainable_weights_count_consistency():
     # And on .fit()
     with pytest.warns(UserWarning) as w:
         model2.fit(x=np.zeros((5, 3)), y=np.zeros((5, 1)))
-    warning_raised = any(['Discrepancy' in str(w_.message) for w_ in w])
+    warning_raised = any('Discrepancy' in str(w_.message) for w_ in w)
     assert warning_raised, (
         'No warning raised when trainable is modified without .compile.')
 
@@ -1918,8 +1914,7 @@ def DISABLED_test_model_metrics_list():
             self.dense = keras.layers.Dense(1, kernel_initializer='ones')
 
         def __call__(self, inputs):
-            outputs = self.dense(inputs)
-            return outputs
+            return self.dense(inputs)
 
     class LayerWithNestedAddMetricLayer(Layer):
 

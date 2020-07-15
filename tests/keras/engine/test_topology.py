@@ -462,7 +462,7 @@ def test_load_layers():
     from keras.layers import Bidirectional, Conv2D, Input
     from keras.models import Model
 
-    if K.backend() == 'tensorflow' or K.backend() == 'cntk':
+    if K.backend() in ['tensorflow', 'cntk']:
         inputs = Input(shape=(10, 20, 20, 1))
     else:
         inputs = Input(shape=(10, 1, 20, 20))
@@ -477,8 +477,7 @@ def test_load_layers():
     # the function is being called correctly for Conv2D
     # old: (filters, stack_size, kernel_rows, kernel_cols)
     # new: (kernel_rows, kernel_cols, stack_size, filters)
-    weight_tensor_td_conv_old = list()
-    weight_tensor_td_conv_old.append(np.zeros((15, 1, 5, 5)))
+    weight_tensor_td_conv_old = [np.zeros((15, 1, 5, 5))]
     weight_tensor_td_conv_old.append(np.zeros((15,)))
     td_conv_layer = model.layers[1]
     td_conv_layer.layer.data_format = 'channels_first'
@@ -494,8 +493,8 @@ def test_load_layers():
     # old ConvLSTM2D took a list of 12 weight tensors,
     # returns a list of 3 concatenated larger tensors.
     weights_bi_conv_old = []
-    for j in range(2):  # bidirectional
-        for i in range(4):
+    for _ in range(2):  # bidirectional
+        for _ in range(4):
             weights_bi_conv_old.append(np.zeros((3, 3, 15, 10)))  # kernel
             weights_bi_conv_old.append(np.zeros((3, 3, 10, 10)))  # recurrent kernel
             weights_bi_conv_old.append(np.zeros((10,)))  # bias
@@ -550,8 +549,7 @@ def test_preprocess_weights_for_loading(layer):
     weights2 = preprocess_weights_for_loading(
         layer, convert_weights(layer, weights1),
         original_keras_version='1')
-    assert all([np.allclose(x, y, 1e-5)
-                for (x, y) in zip(weights1, weights2)])
+    assert all(np.allclose(x, y, 1e-5) for (x, y) in zip(weights1, weights2))
 
 
 @pytest.mark.parametrize("layer", [
@@ -566,8 +564,7 @@ def test_preprocess_weights_for_loading_for_model(layer):
     weights2 = preprocess_weights_for_loading(
         model, convert_weights(layer, weights1),
         original_keras_version='1')
-    assert all([np.allclose(x, y, 1e-5)
-                for (x, y) in zip(weights1, weights2)])
+    assert all(np.allclose(x, y, 1e-5) for (x, y) in zip(weights1, weights2))
 
 
 @pytest.mark.parametrize('layer_class,args', [
@@ -585,7 +582,7 @@ def test_preprocess_weights_for_loading_rnn_should_be_idempotent(layer_class, ar
     _ = Sequential([layer])
     weights1 = layer.get_weights()
     weights2 = preprocess_weights_for_loading(layer, weights1)
-    assert all([np.allclose(x, y, 1e-5) for (x, y) in zip(weights1, weights2)])
+    assert all(np.allclose(x, y, 1e-5) for (x, y) in zip(weights1, weights2))
 
 
 def test_recursion_with_bn_and_loss():

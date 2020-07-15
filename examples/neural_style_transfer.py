@@ -158,8 +158,7 @@ def gram_matrix(x):
         features = K.batch_flatten(x)
     else:
         features = K.batch_flatten(K.permute_dimensions(x, (2, 0, 1)))
-    gram = K.dot(features, K.transpose(features))
-    return gram
+    return K.dot(features, K.transpose(features))
 
 # the "style loss" is designed to maintain
 # the style of the reference image in the generated image.

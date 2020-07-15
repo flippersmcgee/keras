@@ -155,7 +155,7 @@ def test_stacked_lstm_char_prediction():
     # prime the model with 'ab' sequence and let it generate the learned alphabet
     sentence = alphabet[:sequence_length]
     generated = sentence
-    for iteration in range(number_of_chars - sequence_length):
+    for _ in range(number_of_chars - sequence_length):
         x = np.zeros((1, sequence_length, number_of_chars))
         for t, char in enumerate(sentence):
             x[0, t, ord(char) - ord('a')] = 1.

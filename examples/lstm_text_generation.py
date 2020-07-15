@@ -11,6 +11,7 @@ If you try this script on new data, make sure your corpus
 has at least ~100k characters. ~1M is better.
 '''
 
+
 from __future__ import print_function
 from keras.callbacks import LambdaCallback
 from keras.models import Sequential
@@ -32,8 +33,8 @@ print('corpus length:', len(text))
 
 chars = sorted(list(set(text)))
 print('total chars:', len(chars))
-char_indices = dict((c, i) for i, c in enumerate(chars))
-indices_char = dict((i, c) for i, c in enumerate(chars))
+char_indices = {c: i for i, c in enumerate(chars)}
+indices_char = {i: c for i, c in enumerate(chars)}
 
 # cut the text in semi-redundant sequences of maxlen characters
 maxlen = 40
@@ -89,7 +90,7 @@ def on_epoch_end(epoch, _):
         print('----- Generating with seed: "' + sentence + '"')
         sys.stdout.write(generated)
 
-        for i in range(400):
+        for _ in range(400):
             x_pred = np.zeros((1, maxlen, len(chars)))
             for t, char in enumerate(sentence):
                 x_pred[0, t, char_indices[char]] = 1.
